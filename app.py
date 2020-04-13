@@ -13,7 +13,32 @@ from rfc3339 import rfc3339
 app = Flask(__name__)
 logger = app.logger
 
-f_handler = logging.FileHandler('estimator.logs')
+# f_handler = logging.FileHandler('estimator.logs')
+# f_handler.setLevel(logging.INFO)
+
+# f_format = logging.Formatter('%(message)s')
+
+# f_handler.setFormatter(f_format)
+
+# logger.addHandler(f_handler)
+
+
+class ListHandler(logging.Handler):  # Inherit from logging.Handler
+    def __init__(self, log_list):
+        # run the regular Handler __init__
+        logging.Handler.__init__(self)
+        # Our custom argument
+        self.log_list = log_list
+
+    def emit(self, record):
+        # record.message is the log message
+        self.log_list.append(record.msg)
+
+
+log_list = []
+f_handler = ListHandler(log_list)
+
+# f_handler = logging.FileHandler('estimator.logs')
 f_handler.setLevel(logging.INFO)
 
 f_format = logging.Formatter('%(message)s')
@@ -35,15 +60,10 @@ def log_request(response):
     elif request.path.startswith('/static'):
         return response
 
-    print('g.start')
-    print(g.start)
     now = time.time()
-    print('now')
-    print(now)
+
     # duration = round(now - g.start, 2)
     duration = round((now - g.start) * 1000)
-    print('duration')
-    print(duration)
     dt = datetime.datetime.fromtimestamp(now)
     timestamp = rfc3339(dt, utc=True)
 
@@ -77,7 +97,7 @@ def log_request(response):
     return response
 
 
-@app.route('/api/v1/on-covid-19')
+@app.route('/api/v1/on-covid-19', methods=['GET', 'POST'])
 def covid_default():
 
     return estimator(sample_data)
@@ -100,10 +120,18 @@ def covid_xml():
 
 @app.route('/api/v1/on-covid-19/logs')
 def logs():
-    with open('estimator.logs', 'r') as f:
-        log_file = f.read()
-        response = make_response(log_file)
-        response.headers['Content-Type'] = 'text/plain'
+    res = ''
+    print(log_list)
+    print('log list')
+    print('\n'.join(log_list))
+    print(res)
+
+    # with open('estimator.logs', 'r') as f:
+    #     log_file = f.read()
+    #     response = make_response(log_file)
+    #     response.headers['Content-Type'] = 'text/plain'
+    response = make_response('\n'.join(log_list))
+    response.headers['Content-Type'] = 'text/plain'
     return response
 
 
