@@ -1,3 +1,5 @@
+ansicolors==1.1.8
+autopep8==1.5.1
 click==7.1.1
 Flask==1.1.2
 gunicorn==20.0.4
@@ -5,5 +7,8 @@ itsdangerous==1.1.0
 Jinja2==2.11.2
 MarkupSafe==1.1.1
 pkg-resources==0.0.0
+pycodestyle==2.5.0
 python-dotenv==0.12.0
+rfc3339==6.2
 Werkzeug==1.0.1
+xmltodict==0.12.0
