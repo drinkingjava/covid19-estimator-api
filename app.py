@@ -11,6 +11,8 @@ from flask import Flask, request, make_response, g
 from rfc3339 import rfc3339
 
 app = Flask(__name__)
+app.config['ENV'] = 'development'
+app.config['DEBUG'] = True
 logger = app.logger
 
 # f_handler = logging.FileHandler('estimator.logs')
@@ -139,4 +141,4 @@ def logs():
 
 
 if __name__ == '__main__':
-    app.run(port=5000)
+    app.run(port=5000, debug=True)
