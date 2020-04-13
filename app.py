@@ -99,7 +99,10 @@ def log_request(response):
 
 @app.route('/api/v1/on-covid-19', methods=['GET', 'POST'])
 def covid_default():
-
+    if request.method == 'POST':
+        request.get_json()
+        print(request.get_json())
+        return estimator(request.get_json())
     return estimator(sample_data)
 
 
