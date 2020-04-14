@@ -65,7 +65,12 @@ def log_request(response):
     now = time.time()
 
     # duration = round(now - g.start, 2)
-    duration = round((now - g.start) * 1000)
+    diff = (now - g.start) * 1000
+    duration = round(diff)
+    print('now (after request hook) converted to millisecs')
+    print(now*1000)
+    print('g.start(before request hook) converted to millisecs ')
+    print(g.start*1000)
     dt = datetime.datetime.fromtimestamp(now)
     timestamp = rfc3339(dt, utc=True)
 
@@ -94,8 +99,8 @@ def log_request(response):
         parts.append(part)
     line = " ".join(parts)
     app.logger.info(
-        f'{request.method} {request.path} '
-        f'{response.status_code} 0{duration}ms')
+        f'{request.method}\t{request.path}\t'
+        f'{response.status_code}\t{duration}ms')
     return response
 
 
