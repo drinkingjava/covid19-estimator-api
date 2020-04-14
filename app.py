@@ -140,8 +140,8 @@ def logs():
     # with open('estimator.logs', 'r') as f:
     #     log_file = f.read()
     #     response = make_response(log_file)
-    # response.headers['Content-Type'] = 'text/plain'
     response = make_response('\n'.join(log_list))
+    response.headers['Content-Type'] = 'text/plain'
     response.mime_type = 'text/plain'
     return response
 
