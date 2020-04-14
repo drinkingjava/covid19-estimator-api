@@ -25,31 +25,6 @@ f_handler.setFormatter(f_format)
 logger.addHandler(f_handler)
 
 
-# class ListHandler(logging.Handler):  # Inherit from logging.Handler
-#     def __init__(self, log_list):
-#         # run the regular Handler __init__
-#         logging.Handler.__init__(self)
-#         # Our custom argument
-#         self.log_list = log_list
-
-#     def emit(self, record):
-#         # record.message is the log message
-#         self.log_list.append(record.msg)
-
-
-# log_list = []  # not sure if Heroku allows writing and reading files
-# f_handler = ListHandler(log_list)
-
-# # f_handler = logging.FileHandler('estimator.logs')
-# f_handler.setLevel(logging.INFO)
-
-# f_format = logging.Formatter('%(message)s')
-
-# f_handler.setFormatter(f_format)
-
-# logger.addHandler(f_handler)
-
-
 @app.before_request
 def start_timer():
     g.start = time.time()
@@ -64,16 +39,10 @@ def log_request(response):
 
     now = time.time()
 
-    # duration = round(now - g.start, 2)
-    diff = (now - g.start) * 10000
+    diff = (now - g.start) * 1000
     duration = round(diff)
-    print('now (after request hook) converted to millisecs')
-    print(now*1000)
-    print('g.start(before request hook) converted to millisecs ')
-    print(g.start*1000)
     dt = datetime.datetime.fromtimestamp(now)
     timestamp = rfc3339(dt, utc=True)
-
     ip = request.headers.get('X-Forwarded-For', request.remote_addr)
     host = request.host.split(':', 1)[0]
     args = dict(request.args)
@@ -134,68 +103,9 @@ def covid_xml():
 
 @app.route('/api/v1/on-covid-19/logs', methods=['GET', 'POST'])
 def logs():
-    res = ''
-    # print(log_list)
-    # print('log list')
-    # print('\n'.join(log_list))
-    # print(res)
     with open('estimator.logs', 'r') as f:
         log_file = f.read()
-        print('log file')
-        print(log_file.rstrip())
-        # res = "\n".join(line for line in f if not line.isspace())
-        # response = make_response(log_file)
         response = make_response(log_file.rstrip())
-    # response = make_response('\n'.join(log_list))
-    response.headers['Content-Type'] = 'text/plain'
-    response.mime_type = 'text/plain'
-    return response
-
-# Extra uri on root path
-@app.route('/', methods=['GET', 'POST'])
-def root_covid_default():
-    if request.method == 'POST':
-        request.get_json()
-        print(request.get_json())
-        return estimator(request.get_json())
-    return estimator(sample_data)
-
-
-@app.route('/json', methods=['GET', 'POST'])
-def root_covid_json():
-    if request.method == 'POST':
-        print(request.data)
-
-    return estimator(sample_data)
-
-
-@app.route('/xml', methods=['GET', 'POST'])
-def root_covid_xml():
-    if request.method == 'POST':
-        print(request.data)
-    data = estimator(sample_data)
-    xml_data = xmltodict.unparse({"data": data}, pretty=True)
-    response = make_response(xml_data)
-    response.headers['Content-Type'] = 'application/xml'
-    return response
-
-
-@app.route('/logs', methods=['GET', 'POST'])
-def root_logs():
-    res = ''
-    # print(log_list)
-    # print('log list')
-    # print('\n'.join(log_list))
-    # print(res)
-
-    with open('estimator.logs', 'r') as f:
-        log_file = f.read()
-        print('log file')
-        print(log_file.rstrip())
-        # res = "\n".join(line for line in f if not line.isspace())
-        # response = make_response(log_file)
-        response = make_response(log_file.rstrip())
-    # response = make_response('\n'.join(log_list))
     response.headers['Content-Type'] = 'text/plain'
     response.mime_type = 'text/plain'
     return response
