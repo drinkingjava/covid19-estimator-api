@@ -102,20 +102,26 @@ def log_request(response):
 @app.route('/api/v1/on-covid-19', methods=['GET', 'POST'])
 def covid_default():
     if request.method == 'POST':
-        request.get_json()
-        print(request.get_json())
+        if request.get_json():
+            print('A pay load was given')
+            print(request.get_json())
         return estimator(request.get_json())
     return estimator(sample_data)
 
 
-@app.route('/api/v1/on-covid-19/json')
+@app.route('/api/v1/on-covid-19/json', methods=['GET', 'POST'])
 def covid_json():
+    if request.method == 'POST':
+        print('request.data #############')
+        print(request.data)
 
     return estimator(sample_data)
 
 
-@app.route('/api/v1/on-covid-19/xml')
+@app.route('/api/v1/on-covid-19/xml', methods=['GET', 'POST'])
 def covid_xml():
+    if request.method == 'POST':
+        print(request.data)
     data = estimator(sample_data)
     xml_data = xmltodict.unparse({"data": data}, pretty=True)
     response = make_response(xml_data)
@@ -123,8 +129,53 @@ def covid_xml():
     return response
 
 
-@app.route('/api/v1/on-covid-19/logs')
+@app.route('/api/v1/on-covid-19/logs', methods=['GET', 'POST'])
 def logs():
+    res = ''
+    print(log_list)
+    print('log list')
+    print('\n'.join(log_list))
+    print(res)
+
+    # with open('estimator.logs', 'r') as f:
+    #     log_file = f.read()
+    #     response = make_response(log_file)
+    # response.headers['Content-Type'] = 'text/plain'
+    response = make_response('\n'.join(log_list))
+    response.mime_type = 'text/plain'
+    return response
+
+# Extra uri on root path
+@app.route('/', methods=['GET', 'POST'])
+def root_covid_default():
+    if request.method == 'POST':
+        request.get_json()
+        print(request.get_json())
+        return estimator(request.get_json())
+    return estimator(sample_data)
+
+
+@app.route('/json', methods=['GET', 'POST'])
+def root_covid_json():
+    if request.method == 'POST':
+        print(request.data)
+
+    return estimator(sample_data)
+
+
+@app.route('/xml', methods=['GET', 'POST'])
+def root_covid_xml():
+    if request.method == 'POST':
+        print(request.data)
+    data = estimator(sample_data)
+    xml_data = xmltodict.unparse({"data": data}, pretty=True)
+    response = make_response(xml_data)
+    response.headers['Content-Type'] = 'application/xml'
+    return response
+
+
+@app.route('/logs', methods=['GET', 'POST'])
+def root_logs():
     res = ''
     print(log_list)
     print('log list')
