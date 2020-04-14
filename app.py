@@ -188,7 +188,11 @@ def root_logs():
 
     with open('estimator.logs', 'r') as f:
         log_file = f.read()
-        response = make_response(log_file)
+        print('log file')
+        print(log_file.rstrip())
+        # res = "\n".join(line for line in f if not line.isspace())
+        # response = make_response(log_file)
+        response = make_response(log_file.rstrip())
     # response = make_response('\n'.join(log_list))
     response.headers['Content-Type'] = 'text/plain'
     response.mime_type = 'text/plain'
