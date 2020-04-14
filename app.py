@@ -107,9 +107,8 @@ def log_request(response):
 @app.route('/api/v1/on-covid-19', methods=['GET', 'POST'])
 def covid_default():
     if request.method == 'POST':
-        if request.get_json():
-            print('A pay load was given')
-            print(request.get_json())
+        request.get_json()
+        print(request.get_json())
         return estimator(request.get_json())
     return estimator(sample_data)
 
@@ -117,7 +116,6 @@ def covid_default():
 @app.route('/api/v1/on-covid-19/json', methods=['GET', 'POST'])
 def covid_json():
     if request.method == 'POST':
-        print('request.data #############')
         print(request.data)
 
     return estimator(sample_data)
@@ -134,20 +132,24 @@ def covid_xml():
     return response
 
 
-# @app.route('/api/v1/on-covid-19/logs', methods=['GET', 'POST'])
-# def logs():
-#     # res = ''
-#     # print(log_list)
-#     # print('log list')
-#     # print('\n'.join(log_list))
-#     # print(res)
-
-#     with open('estimator.logs', 'r') as f:
-#         log_file = f.read()
-#     response = make_response()
-#     response.headers['Content-Type'] = 'text/plain'
-#     response.mime_type = 'text/plain'
-#     return response
+@app.route('/api/v1/on-covid-19/logs', methods=['GET', 'POST'])
+def logs():
+    res = ''
+    # print(log_list)
+    # print('log list')
+    # print('\n'.join(log_list))
+    # print(res)
+    with open('estimator.logs', 'r') as f:
+        log_file = f.read()
+        print('log file')
+        print(log_file.rstrip())
+        # res = "\n".join(line for line in f if not line.isspace())
+        # response = make_response(log_file)
+        response = make_response(log_file.rstrip())
+    # response = make_response('\n'.join(log_list))
+    response.headers['Content-Type'] = 'text/plain'
+    response.mime_type = 'text/plain'
+    return response
 
 # Extra uri on root path
 @app.route('/', methods=['GET', 'POST'])
