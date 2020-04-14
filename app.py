@@ -65,7 +65,7 @@ def log_request(response):
     now = time.time()
 
     # duration = round(now - g.start, 2)
-    diff = (now - g.start) * 1000
+    diff = (now - g.start) * 10000
     duration = round(diff)
     print('now (after request hook) converted to millisecs')
     print(now*1000)
