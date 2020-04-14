@@ -15,32 +15,7 @@ app.config['ENV'] = 'development'
 app.config['DEBUG'] = True
 logger = app.logger
 
-# f_handler = logging.FileHandler('estimator.logs')
-# f_handler.setLevel(logging.INFO)
-
-# f_format = logging.Formatter('%(message)s')
-
-# f_handler.setFormatter(f_format)
-
-# logger.addHandler(f_handler)
-
-
-class ListHandler(logging.Handler):  # Inherit from logging.Handler
-    def __init__(self, log_list):
-        # run the regular Handler __init__
-        logging.Handler.__init__(self)
-        # Our custom argument
-        self.log_list = log_list
-
-    def emit(self, record):
-        # record.message is the log message
-        self.log_list.append(record.msg)
-
-
-log_list = []
-f_handler = ListHandler(log_list)
-
-# f_handler = logging.FileHandler('estimator.logs')
+f_handler = logging.FileHandler('estimator.logs')
 f_handler.setLevel(logging.INFO)
 
 f_format = logging.Formatter('%(message)s')
@@ -48,6 +23,31 @@ f_format = logging.Formatter('%(message)s')
 f_handler.setFormatter(f_format)
 
 logger.addHandler(f_handler)
+
+
+# class ListHandler(logging.Handler):  # Inherit from logging.Handler
+#     def __init__(self, log_list):
+#         # run the regular Handler __init__
+#         logging.Handler.__init__(self)
+#         # Our custom argument
+#         self.log_list = log_list
+
+#     def emit(self, record):
+#         # record.message is the log message
+#         self.log_list.append(record.msg)
+
+
+# log_list = []  # not sure if Heroku allows writing and reading files
+# f_handler = ListHandler(log_list)
+
+# # f_handler = logging.FileHandler('estimator.logs')
+# f_handler.setLevel(logging.INFO)
+
+# f_format = logging.Formatter('%(message)s')
+
+# f_handler.setFormatter(f_format)
+
+# logger.addHandler(f_handler)
 
 
 @app.before_request
@@ -134,21 +134,20 @@ def covid_xml():
     return response
 
 
-@app.route('/api/v1/on-covid-19/logs', methods=['GET', 'POST'])
-def logs():
-    res = ''
-    print(log_list)
-    print('log list')
-    print('\n'.join(log_list))
-    print(res)
+# @app.route('/api/v1/on-covid-19/logs', methods=['GET', 'POST'])
+# def logs():
+#     # res = ''
+#     # print(log_list)
+#     # print('log list')
+#     # print('\n'.join(log_list))
+#     # print(res)
 
-    # with open('estimator.logs', 'r') as f:
-    #     log_file = f.read()
-    #     response = make_response(log_file)
-    response = make_response('\n'.join(log_list))
-    response.headers['Content-Type'] = 'text/plain'
-    response.mime_type = 'text/plain'
-    return response
+#     with open('estimator.logs', 'r') as f:
+#         log_file = f.read()
+#     response = make_response()
+#     response.headers['Content-Type'] = 'text/plain'
+#     response.mime_type = 'text/plain'
+#     return response
 
 # Extra uri on root path
 @app.route('/', methods=['GET', 'POST'])
@@ -182,15 +181,15 @@ def root_covid_xml():
 @app.route('/logs', methods=['GET', 'POST'])
 def root_logs():
     res = ''
-    print(log_list)
-    print('log list')
-    print('\n'.join(log_list))
-    print(res)
+    # print(log_list)
+    # print('log list')
+    # print('\n'.join(log_list))
+    # print(res)
 
-    # with open('estimator.logs', 'r') as f:
-    #     log_file = f.read()
-    #     response = make_response(log_file)
-    response = make_response('\n'.join(log_list))
+    with open('estimator.logs', 'r') as f:
+        log_file = f.read()
+        response = make_response(log_file)
+    # response = make_response('\n'.join(log_list))
     response.headers['Content-Type'] = 'text/plain'
     response.mime_type = 'text/plain'
     return response
