@@ -95,7 +95,7 @@ def log_request(response):
     line = " ".join(parts)
     app.logger.info(
         f'{request.method} {request.path} '
-        f'{response.status_code} {duration}ms')
+        f'{response.status_code} 0{duration}ms')
     return response
 
 
